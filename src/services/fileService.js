@@ -10,7 +10,8 @@ class FileService {
   }
 
   async mergeChunks(originalFileName, totalChunks) {
-    const sha256FileName = FileUtils.getSha256(originalFileName);
+    const timestamp = Date.now().toString();
+    const sha256FileName = FileUtils.getSha256(`${originalFileName}-${timestamp}`);
     const hashedPath = FileUtils.getHashedPath(sha256FileName);
     const mergedFilePath = path.join(this.UPLOAD_DIR, hashedPath);
 

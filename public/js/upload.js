@@ -11,7 +11,6 @@ async function uploadFile(file, progressBar) {
     formData.append('chunk', chunk, `${file.name}.part${chunkNumber}`);
     formData.append('originalname', file.name);
     formData.append('chunkNumber', chunkNumber);
-    formData.append('totalChunks', totalChunks);
 
     try {
       const uploadChunk = await fetch(`/api/upload/chunk`, {

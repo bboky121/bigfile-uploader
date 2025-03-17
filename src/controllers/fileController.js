@@ -1,4 +1,5 @@
 const FileService = require('../services/fileService');
+const logger = require('../config/logger');
 
 class FileController {
     constructor() {
@@ -22,7 +23,7 @@ class FileController {
                 file_url: result.file_url
             });
         } catch (error) {
-            console.error('파일 병합 에러:', error);
+            logger.error('파일 병합 에러:', error);
             res.status(500).json({
                 success: false,
                 message: '파일 병합 중 오류가 발생했습니다.'
