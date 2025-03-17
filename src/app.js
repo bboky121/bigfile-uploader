@@ -3,15 +3,18 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
 const fileRouter = require('./routes/api/files');
+const logger = require('./config/logger');
 
 // 환경 변수 설정
 dotenv.config();
 
 const app = express();
-const PORT = 3333;
+const PORT = process.env.PORT || 3333;
 
+if (process.env.NODE_ENV === 'development') {
+  app.use(cors());
+}
 // 미들웨어 설정
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../public')));
@@ -36,5 +39,19 @@ app.use('/api/upload', fileRouter);
 
 // 서버 시작
 app.listen(PORT, () => {
-  console.log(`서버가 http://localhost:${PORT} 에서 실행중입니다.`);
-}); 
+  logger.info(`서버가 http://localhost:${PORT} 에서 실행중입니다.`);
+});
+
+
+// 에러 핸들링
+process.on('uncaughtException', (error) => {
+  logger.error(`uncaughtException: ${error.message}`);
+  logger.error(error.stack);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  logger.error('Unhandled Rejection at:', promise);
+  logger.error('Reason:', reason);
+});
+
+module.exports = app; 

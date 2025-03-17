@@ -149,3 +149,5 @@ uploads/
 
 # 테스트 더미 파일 저장 디렉토리
 test_dummy_file/
+
+.cursor
