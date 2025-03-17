@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- 배경 원 -->
+  <circle cx="32" cy="32" r="30" fill="#4285F4"/>
+  
+  <!-- 파일 아이콘 -->
+  <rect x="18" y="14" width="28" height="36" rx="3" fill="white"/>
+  
+  <!-- 파일 선 -->
+  <line x1="24" y1="28" x2="40" y2="28" stroke="#4285F4" stroke-width="3" stroke-linecap="round"/>
+  <line x1="24" y1="36" x2="40" y2="36" stroke="#4285F4" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- 위쪽 화살표 -->
+  <path d="M32 14 L32 2 M26 8 L32 2 L38 8" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

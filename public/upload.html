@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>파일 업로드</title>
+    <link rel="stylesheet" href="/css/upload.css" />
+    <script src="/js/upload.js"></script>
+    <script src="/js/utils.js"></script>
+  </head>
+  <body>
+    <div class="upload-container">
+      <h1>대용량 파일 업로드</h1>
+      <div class="upload-area" id="dropZone">
+        <p>파일을 드래그하여 놓거나 클릭하여 선택하세요</p>
+        <input type="file" id="fileInput" class="file-input" />
+      </div>
+      <div class="file-info" id="fileInfo">
+        <p>파일명: <span id="fileName">-</span></p>
+        <p>파일 크기: <span id="fileSize">-</span></p>
+        <div class="progress-bar">
+          <progress id="progressBar" value="0" max="100" class="progress"></progress>
+        </div>
+      </div>
+      <button class="upload-btn" id="uploadBtn">업로드</button>
+      <div class="nav-links">
+        <a href="/files">업로드된 파일 목록 보기</a>
+      </div>
+    </div>
+    <script>
+      const dropZone = document.getElementById("dropZone");
+      const uploadBtn = document.getElementById("uploadBtn");
+
+      function handleDrop(e) {
+        e.preventDefault();
+        console.log('hi');
+        const fileInfo = document.getElementById("fileInfo");
+        const fileInput = document.getElementById("fileInput");
+        const fileName = document.getElementById("fileName");
+        const fileSize = document.getElementById("fileSize");
+
+        const data = e.dataTransfer.files[0];
+
+        // 파일 입력 요소에 드래그된 파일 할당
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(data);
+        fileInput.files = dataTransfer.files;
+
+        fileName.innerText = data.name;
+        fileSize.innerText = fileSizeFormat(data.size);
+        fileInfo.style.display = "block";
+      }
+
+      function handleDragOver(e) {
+        e.preventDefault();
+      }
+
+      function uploadBtnClickHandler() {
+        const fileInput = document.getElementById("fileInput");
+        const progressBarParent = document.getElementsByClassName("progress-bar")[0];
+        const progressBar = document.getElementById("progressBar");
+        const file = fileInput.files[0];
+
+        if (!file) {
+          alert("파일을 선택해주세요.");
+          return;
+        }
+        progressBar.value = 0;
+        progressBarParent.style.display = "block";
+        uploadFile(file, progressBar);
+      }
+
+      dropZone.addEventListener("drop", handleDrop);
+      dropZone.addEventListener("dragover", handleDragOver);
+      uploadBtn.addEventListener("click", uploadBtnClickHandler);
+    </script>
+  </body>
+</html>

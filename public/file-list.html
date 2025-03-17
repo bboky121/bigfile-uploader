@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>업로드된 파일 목록</title>
+    <link rel="stylesheet" href="/css/file-list.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>업로드된 파일 목록</h1>
+            <a href="/upload" class="upload-btn">새 파일 업로드</a>
+        </header>
+
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="파일명 검색...">
+            <button class="search-btn">검색</button>
+        </div>
+
+        <table class="file-table" id="fileTable">
+            <thead>
+                <tr>
+                    <th>파일명</th>
+                    <th>크기</th>
+                    <th>업로드 날짜</th>
+                    <th>작업</th>
+                </tr>
+            </thead>
+            <tbody id="fileList">
+                <!-- 파일 목록이 여기에 동적으로 추가됩니다 -->
+                <!-- 예시 데이터 -->
+                <tr>
+                    <td class="file-name">
+                        <svg class="file-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        <a href="#">document.pdf</a>
+                    </td>
+                    <td>2.5 MB</td>
+                    <td>2023-06-15 14:30</td>
+                    <td>
+                        <button class="action-btn">다운로드</button>
+                        <button class="action-btn delete-btn">삭제</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="file-name">
+                        <svg class="file-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        <a href="#">image.jpg</a>
+                    </td>
+                    <td>1.2 MB</td>
+                    <td>2023-06-14 09:15</td>
+                    <td>
+                        <button class="action-btn">다운로드</button>
+                        <button class="action-btn delete-btn">삭제</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 파일이 없을 때 표시할 빈 상태 -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#6c757d" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="12" y1="18" x2="12" y2="12"></line>
+                <line x1="9" y1="15" x2="15" y2="15"></line>
+            </svg>
+            <p>업로드된 파일이 없습니다</p>
+            <a href="/upload" class="upload-btn" style="display: inline-block; margin-top: 1rem;">파일 업로드하기</a>
+        </div>
+
+        <ul class="pagination">
+            <li><a href="#">&laquo;</a></li>
+            <li><a href="#" class="active">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">&raquo;</a></li>
+        </ul>
+    </div>
+</body>
+</html> 
