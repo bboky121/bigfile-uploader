@@ -11,7 +11,7 @@
   <body>
     <div class="upload-container">
       <h1>대용량 파일 업로드</h1>
-      <div class="upload-area" id="dropZone">
+      <div class="upload-area" id="uploadArea">
         <p>파일을 드래그하여 놓거나 클릭하여 선택하세요</p>
         <input type="file" id="fileInput" class="file-input" />
       </div>
@@ -27,10 +27,10 @@
         <a href="/files">업로드된 파일 목록 보기</a>
       </div>
     </div>
-    <script>
-      const dropZone = document.getElementById("dropZone");
-      const uploadBtn = document.getElementById("uploadBtn");
 
+    <script>
+      const uploadBtn = document.getElementById("uploadBtn");
+      const body = document.querySelector('body');
       function handleDrop(e) {
         e.preventDefault();
         const fileInfo = document.getElementById("fileInfo");
@@ -54,6 +54,11 @@
         e.preventDefault();
       }
 
+      function uploadAreaClickHandler() {
+        const fileInput = document.getElementById("fileInput");
+        fileInput.click();
+      }
+
       function uploadBtnClickHandler() {
         const fileInput = document.getElementById("fileInput");
         const progressBarParent = document.getElementsByClassName("progress-bar")[0];
@@ -69,8 +74,9 @@
         uploadFile(file, progressBar);
       }
 
-      dropZone.addEventListener("drop", handleDrop);
-      dropZone.addEventListener("dragover", handleDragOver);
+      body.addEventListener("drop", handleDrop);
+      body.addEventListener("dragover", handleDragOver);
+      uploadArea.addEventListener("click", uploadAreaClickHandler);
       uploadBtn.addEventListener("click", uploadBtnClickHandler);
     </script>
   </body>

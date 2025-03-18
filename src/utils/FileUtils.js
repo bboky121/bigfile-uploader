@@ -42,6 +42,14 @@ class FileUtils {
       })
     );
   }
+
+  static async getChunkCount(fileName) {
+    const chunkDir = process.env.CHUNK_DIR;
+    const files = fs.readdirSync(chunkDir)
+      .filter(file => file.startsWith(fileName));
+
+    return files.length;
+  }
 }
 
 module.exports = FileUtils;

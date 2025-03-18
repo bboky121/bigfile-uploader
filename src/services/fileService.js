@@ -1,11 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 const FileUtils = require('../utils/fileUtils');
+const logger = require('../middleware/logger');
 
 class FileService {
   constructor() {
-    this.UPLOAD_DIR = path.join(__dirname, '../../uploads');
-    this.CHUNK_DIR = path.join(this.UPLOAD_DIR, 'chunks');
+    this.UPLOAD_DIR = process.env.UPLOAD_DIR;
+    this.CHUNK_DIR = process.env.CHUNK_DIR;
     [this.UPLOAD_DIR, this.CHUNK_DIR].forEach(dir => FileUtils.makeDir(dir));
   }
 
@@ -50,19 +51,32 @@ class FileService {
         );
 
         try {
+          logger.info(`${chunkPath} 파일 병합 중... ${currentChunk} / ${totalChunks}`);
           if (fs.existsSync(chunkPath)) {
             const chunkBuffer = await fs.promises.readFile(chunkPath);
             writeStream.write(chunkBuffer);
+
+            logger.info(`${originalFileName} 파일 병합 중... ${currentChunk} / ${totalChunks}`);
+
+            currentChunk++;
+            processNextChunk();
+          } else {
+            logger.error(`${originalFileName} 파일 병합 중... ${currentChunk} / ${totalChunks} 청크 없음`);
+            throw new Error(`${originalFileName} 파일 병합 중... ${currentChunk} / ${totalChunks} 청크 없음`);
           }
-          currentChunk++;
-          processNextChunk();
         } catch (error) {
           reject(error);
         }
       };
-
       processNextChunk();
     });
+  }
+
+  async getUploadStatus(fileName) {
+    const count = await FileUtils.getChunkCount(fileName);
+    return {
+      count
+    };
   }
 }
 

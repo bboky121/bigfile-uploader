@@ -1,5 +1,5 @@
 const FileService = require('../services/fileService');
-const logger = require('../config/logger');
+const logger = require('../middleware/logger');
 
 class FileController {
     constructor() {
@@ -32,7 +32,11 @@ class FileController {
     }
 
     async getUploadStatus(req, res) {
-        // 업로드 상태 확인 로직 구현
+        const { fileName } = req.params;
+        const status = await this.fileService.getUploadStatus(fileName);
+        res.json({
+            count: status.count
+        });
     }
 }
 

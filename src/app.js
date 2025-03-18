@@ -1,23 +1,25 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const path = require('path');
-const fileRouter = require('./routes/api/files');
-const logger = require('./config/logger');
-
-// 환경 변수 설정
 dotenv.config();
 
+const path = require('path');
+const fileRouter = require('./routes/api/files');
+const logger = require('./middleware/logger');
+
+// 환경 변수 설정
 const app = express();
 const PORT = process.env.PORT || 3333;
+const publicPath = path.join(process.cwd(), 'public');
 
 if (process.env.NODE_ENV === 'development') {
   app.use(cors());
 }
+
 // 미들웨어 설정
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(publicPath));
 
 // 기본 라우트
 app.get('/', (req, res) => {
@@ -26,12 +28,12 @@ app.get('/', (req, res) => {
 
 // 업로드 페이지 라우트
 app.get('/upload', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/upload.html'));
+  res.sendFile(path.join(publicPath, 'upload.html'));
 });
 
 // 파일 목록 페이지 라우트
 app.get('/files', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/file-list.html'));
+  res.sendFile(path.join(publicPath, 'file-list.html'));
 });
 
 // API 라우트
