@@ -144,6 +144,9 @@ dist
 
 # End of https://www.toptal.com/developers/gitignore/api/node
 
+# 데이터베이스 경로
+db/
+
 # 업로드 파일 저장 디렉토리
 uploads/
 
@@ -151,3 +154,4 @@ uploads/
 test_dummy_file/
 
 .cursor
+

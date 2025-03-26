@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>업로드된 파일 목록</title>
+    <link rel="stylesheet" href="/css/file-list.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>업로드된 파일 목록</h1>
+        <a href="/files/upload" class="upload-btn">새 파일 업로드</a>
+      </header>
+
+      <div class="search-bar">
+        <input type="text" class="search-input" placeholder="파일명 검색..." />
+        <button class="search-btn">검색</button>
+      </div>
+
+      <table class="file-table" id="fileTable">
+        <thead>
+          <tr>
+            <th>파일명</th>
+            <th>크기</th>
+            <th>업로드 날짜</th>
+            <th>작업</th>
+          </tr>
+        </thead>
+        <tbody id="fileList">
+          <% if (files && files.length > 0) { %> <% files.forEach(function(file)
+          { %>
+          <tr>
+            <td class="file-name">
+              <img
+                src="/images/file-icon.svg"
+                class="file-icon"
+                alt="파일 아이콘"
+              />
+              <a href="/download/<%= file.id %>"><%= file.original_name %></a>
+            </td>
+            <td><%= file.formattedSize %></td>
+            <td><%= new Date(file.upload_date).toLocaleString() %></td>
+            <td>
+              <button
+                class="action-btn"
+                onclick="downloadFile('<%= file.id %>')"
+              >
+                다운로드
+              </button>
+              <button
+                class="action-btn delete-btn"
+                onclick="deleteFile('<%= file.id %>')"
+              >
+                삭제
+              </button>
+            </td>
+          </tr>
+          <% }); %> <% } else { %>
+          <tr>
+            <td colspan="4" class="no-files">업로드된 파일이 없습니다</td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+
+      <% if (files && files.length > 0) { %>
+      <ul class="pagination">
+        <% for(let i = 1; i <= totalPages; i++) { %>
+        <li>
+          <a
+            href="/files?page=<%= i %>&search=<%= search %>"
+            class="<%= currentPage === i ? 'active' : '' %>"
+            ><%= i %></a
+          >
+        </li>
+        <% } %>
+      </ul>
+      <% } %>
+    </div>
+
+    <script>
+      async function downloadFile(fileId) {
+        window.location.href = `/files/download/${fileId}`;
+      }
+
+      async function deleteFile(fileId) {
+        if (!confirm("정말로 이 파일을 삭제하시겠습니까?")) return;
+
+        try {
+          const response = await fetch(`/files/${fileId}`, {
+            method: "DELETE",
+          });
+
+          if (response.ok) {
+            window.location.reload();
+          } else {
+            alert("파일 삭제에 실패했습니다.");
+          }
+        } catch (error) {
+          alert("파일 삭제 중 오류가 발생했습니다.");
+        }
+      }
+    </script>
+  </body>
+</html>

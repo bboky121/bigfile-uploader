@@ -39,11 +39,23 @@ async function uploadFile(file, progressBar) {
     try {
       const completeResult = await requestMergeChunks(file.name, totalChunks);
       console.log('completeResult', completeResult);
+      return {
+        success: true,
+        fileId: completeResult.fileId
+      };
     } catch (error) {
       console.error('청크 병합 요청 중 오류 발생:', error);
-      alert("업로드 중 오류가 발생했습니다. 다시 시도해주세요.");
+      return {
+        success: false,
+        error: '청크 병합 요청 중 오류가 발생했습니다. 다시 시도해주세요.'
+      };
     }
   }
+
+  return {
+    success: false,
+    error: '업로드 중 오류가 발생했습니다. 다시 시도해주세요.'
+  };
 }
 
 async function requestMergeChunks(fileName, totalChunks) {

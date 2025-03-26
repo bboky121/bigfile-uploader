@@ -4,7 +4,8 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const path = require('path');
-const fileRouter = require('./routes/api/files');
+const uploadRouter = require('./routes/api/upload');
+const fileRouter = require('./routes/files');
 const logger = require('./middleware/logger');
 
 // 환경 변수 설정
@@ -16,6 +17,9 @@ if (process.env.NODE_ENV === 'development') {
   app.use(cors());
 }
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 // 미들웨어 설정
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -26,18 +30,11 @@ app.get('/', (req, res) => {
   res.json({ message: '서버가 정상적으로 실행중입니다.' });
 });
 
-// 업로드 페이지 라우트
-app.get('/upload', (req, res) => {
-  res.sendFile(path.join(publicPath, 'upload.html'));
-});
+// API router
+app.use('/api/upload', uploadRouter);
 
-// 파일 목록 페이지 라우트
-app.get('/files', (req, res) => {
-  res.sendFile(path.join(publicPath, 'file-list.html'));
-});
-
-// API 라우트
-app.use('/api/upload', fileRouter);
+// file list router
+app.use('/files', fileRouter);
 
 // 서버 시작
 app.listen(PORT, () => {

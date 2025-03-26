@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>파일 업로드</title>
     <link rel="stylesheet" href="/css/upload.css" />
-    <script src="/js/upload.js"></script>
-    <script src="/js/utils.js"></script>
   </head>
   <body>
     <div class="upload-container">
@@ -19,7 +17,12 @@
         <p>파일명: <span id="fileName">-</span></p>
         <p>파일 크기: <span id="fileSize">-</span></p>
         <div class="progress-bar">
-          <progress id="progressBar" value="0" max="100" class="progress"></progress>
+          <progress
+            id="progressBar"
+            value="0"
+            max="100"
+            class="progress"
+          ></progress>
         </div>
       </div>
       <button class="upload-btn" id="uploadBtn">업로드</button>
@@ -28,26 +31,37 @@
       </div>
     </div>
 
+    <script src="/js/utils.js"></script>
+    <script src="/js/upload.js"></script>
     <script>
       const uploadBtn = document.getElementById("uploadBtn");
-      const body = document.querySelector('body');
-      function handleDrop(e) {
-        e.preventDefault();
+      const body = document.querySelector("body");
+
+      function dislplayFileInfo(file) {
         const fileInfo = document.getElementById("fileInfo");
-        const fileInput = document.getElementById("fileInput");
         const fileName = document.getElementById("fileName");
         const fileSize = document.getElementById("fileSize");
 
-        const data = e.dataTransfer.files[0];
+        fileName.innerText = file.name;
+        fileSize.innerText = fileSizeFormat(file.size);
+        fileInfo.style.display = "block";
+      }
 
-        // 파일 입력 요소에 드래그된 파일 할당
+      function handleDrop(e) {
+        e.preventDefault();
+        const fileInput = document.getElementById("fileInput");
+        const file = e.dataTransfer.files[0];
+
         const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(data);
+        dataTransfer.items.add(file);
         fileInput.files = dataTransfer.files;
 
-        fileName.innerText = data.name;
-        fileSize.innerText = fileSizeFormat(data.size);
-        fileInfo.style.display = "block";
+        dislplayFileInfo(file);
+      }
+
+      function handleFileChange(e) {
+        const file = e.target.files[0];
+        dislplayFileInfo(file);
       }
 
       function handleDragOver(e) {
@@ -61,7 +75,8 @@
 
       function uploadBtnClickHandler() {
         const fileInput = document.getElementById("fileInput");
-        const progressBarParent = document.getElementsByClassName("progress-bar")[0];
+        const progressBarParent =
+          document.getElementsByClassName("progress-bar")[0];
         const progressBar = document.getElementById("progressBar");
         const file = fileInput.files[0];
 
@@ -71,13 +86,21 @@
         }
         progressBar.value = 0;
         progressBarParent.style.display = "block";
-        uploadFile(file, progressBar);
+        uploadFile(file, progressBar).then((result) => {
+          if (result.success) {
+            alert("업로드 완료");
+          } else {
+            alert(result.error);
+          }
+          progressBarParent.style.display = "none";
+        });
       }
 
       body.addEventListener("drop", handleDrop);
       body.addEventListener("dragover", handleDragOver);
       uploadArea.addEventListener("click", uploadAreaClickHandler);
       uploadBtn.addEventListener("click", uploadBtnClickHandler);
+      fileInput.addEventListener("change", handleFileChange);
     </script>
   </body>
 </html>

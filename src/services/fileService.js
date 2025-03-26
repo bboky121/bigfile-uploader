@@ -2,12 +2,21 @@ const fs = require('fs');
 const path = require('path');
 const FileUtils = require('../utils/fileUtils');
 const logger = require('../middleware/logger');
+const File = require('../models/File');
 
 class FileService {
   constructor() {
     this.UPLOAD_DIR = process.env.UPLOAD_DIR;
     this.CHUNK_DIR = process.env.CHUNK_DIR;
     [this.UPLOAD_DIR, this.CHUNK_DIR].forEach(dir => FileUtils.makeDir(dir));
+    File.init(); // SQLite DB 초기화
+  }
+
+  fileSizeFormat(bytes) {
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes === 0) return '0 Byte';
+    const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
   }
 
   async mergeChunks(originalFileName, totalChunks) {
@@ -26,9 +35,21 @@ class FileService {
       await this._processChunks(originalFileName, totalChunks, mergedFileStream);
       await FileUtils.deleteChunks(this.CHUNK_DIR, originalFileName);
 
+      // 파일 병합 완료 후 DB에 메타데이터 저장
+      const finalFilePath = path.join(mergedFilePath, sha256FileName);
+      const stats = await fs.promises.stat(finalFilePath);
+
+      const fileMetadata = await File.create({
+        originalName: originalFileName,
+        fileName: sha256FileName,
+        filePath: hashedPath,
+        fileSize: stats.size
+      });
+
       return {
         success: true,
-        file_url: `/uploads/${hashedPath}/${sha256FileName}`
+        file_url: `/uploads/${hashedPath}/${sha256FileName}`,
+        fileId: fileMetadata.id
       };
     } catch (error) {
       throw new Error(`파일 병합 실패: ${error.message}`);
@@ -76,6 +97,34 @@ class FileService {
     const count = await FileUtils.getChunkCount(fileName);
     return {
       count
+    };
+  }
+
+  async getFiles(page, limit, search) {
+    const files = await File.getList(page, limit, search);
+    const total = await File.count(search);
+    return { files, total };
+  }
+
+  async deleteFile(fileId) {
+    const file = await File.getFileById(fileId);
+    if (!file) {
+      throw new Error('File not found');
+    }
+
+    await File.deleteFile(fileId);
+  }
+
+  async getFileById(fileId) {
+    const file = await File.getFileById(fileId);
+    if (!file) {
+      throw new Error('File not found');
+    }
+
+    const filePath = path.join(this.UPLOAD_DIR, file.file_path, file.file_name);
+    return {
+      file,
+      filePath
     };
   }
 }
