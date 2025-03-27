@@ -177,6 +177,13 @@ h1 {
     font-size: 1.1rem;
 }
 
+.file-table td.no-files {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+    font-size: 1.1rem;
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 1rem;
