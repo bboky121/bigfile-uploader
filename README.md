@@ -98,6 +98,10 @@ project-root/
 - `UPLOAD_DIR` - 파일 업로드 디렉토리
 - `CHUNK_DIR` - 청크 파일 임시 저장 디렉토리
 
+## DB 설치
+- SQLite 사용
+- `db/upload.sqlite` 생성
+
 ## 라이선스
 
 MIT License
