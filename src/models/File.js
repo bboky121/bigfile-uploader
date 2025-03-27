@@ -47,7 +47,7 @@ class File {
         });
     }
 
-    static async getList(page, limit, search) {
+    static async getList(page = 1, limit = 10, search = '') {
         const offset = (page - 1) * limit;
         let query = `SELECT 
             id, 
@@ -75,16 +75,14 @@ class File {
     }
 
     static async count(search) {
-        const where = {};
-        if (search) {
-            where.original_name = { [Op.like]: `%${search}%` };
-        }
         let query = `SELECT COUNT(*) as count FROM files`;
         let params = [];
-        if (Object.keys(where).length > 0) {
-            query += ` WHERE ${Object.keys(where).map(key => `${key} = ?`).join(' AND ')}`;
-            params = [...Object.values(where)];
+
+        if (search) {
+            query += ` WHERE original_name LIKE ?`;
+            params = [`%${search}%`];
         }
+
         return new Promise((resolve, reject) => {
             this.db.get(query, params, (err, row) => {
                 if (err) reject(err);

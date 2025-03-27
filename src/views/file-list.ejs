@@ -37,7 +37,7 @@
                 class="file-icon"
                 alt="파일 아이콘"
               />
-              <a href="/download/<%= file.id %>"><%= file.original_name %></a>
+              <a href="/files/download/<%= file.id %>"><%= file.original_name %></a>
             </td>
             <td><%= file.formattedSize %></td>
             <td><%= new Date(file.upload_date).toLocaleString() %></td>
@@ -101,6 +101,21 @@
           alert("파일 삭제 중 오류가 발생했습니다.");
         }
       }
+
+      async function searchFiles() {
+        const searchInput = document.querySelector(".search-input");
+        const searchValue = searchInput.value.trim();
+        window.location.href = `/files?page=1&search=${searchValue}`;
+      }
+
+      document
+        .querySelector(".search-btn")
+        .addEventListener("click", searchFiles);
+      document.querySelector(".search-input").addEventListener("keyup", (e) => {
+        if (e.key === "Enter") {
+          searchFiles();
+        }
+      });
     </script>
   </body>
 </html>
