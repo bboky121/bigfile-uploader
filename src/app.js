@@ -7,6 +7,8 @@ const path = require('path');
 const uploadRouter = require('./routes/api/upload');
 const fileRouter = require('./routes/files');
 const logger = require('./middleware/logger');
+const swaggerUi = require('swagger-ui-express');
+const specs = require('./config/swagger');
 
 // 환경 변수 설정
 const app = express();
@@ -35,6 +37,9 @@ app.use('/api/upload', uploadRouter);
 
 // file list router
 app.use('/files', fileRouter);
+
+// Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // 서버 시작
 app.listen(PORT, () => {
