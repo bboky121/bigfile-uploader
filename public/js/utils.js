@@ -1,11 +1,6 @@
-function fileSizeFormat(size) {
-  if (size < 1024) {
-    return size + "B";
-  } else if (size < 1024 * 1024) {
-    return (size / 1024).toFixed(2) + "KB";
-  } else if (size < 1024 * 1024 * 1024) {
-    return (size / 1024 / 1024).toFixed(2) + "MB";
-  } else {
-    return (size / 1024 / 1024 / 1024).toFixed(2) + "GB";
-  }
+function fileSizeFormat(bytes) {
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  if (bytes === 0) return '0 Byte';
+  const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+  return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
 }
