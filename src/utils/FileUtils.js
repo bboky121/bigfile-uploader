@@ -7,7 +7,7 @@ const CONSTANTS = {
     HASH_LENGTH: 2
 };
 
-class FileUtils {
+class fileUtils {
   static makeDir(dir) {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
@@ -52,4 +52,4 @@ class FileUtils {
   }
 }
 
-module.exports = FileUtils;
+module.exports = fileUtils;

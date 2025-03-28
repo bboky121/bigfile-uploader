@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const FileUtils = require('../utils/fileUtils');
+const fileUtils = require('../utils/fileUtils');
 const logger = require('../middleware/logger');
 const File = require('../models/File');
 
@@ -8,7 +8,7 @@ class FileService {
   constructor() {
     this.UPLOAD_DIR = process.env.UPLOAD_DIR;
     this.CHUNK_DIR = process.env.CHUNK_DIR;
-    [this.UPLOAD_DIR, this.CHUNK_DIR].forEach(dir => FileUtils.makeDir(dir));
+    [this.UPLOAD_DIR, this.CHUNK_DIR].forEach(dir => fileUtils.makeDir(dir));
     File.init(); // SQLite DB 초기화
   }
 
@@ -21,11 +21,11 @@ class FileService {
 
   async mergeChunks(originalFileName, totalChunks) {
     const timestamp = Date.now().toString();
-    const sha256FileName = FileUtils.getSha256(`${originalFileName}-${timestamp}`);
-    const hashedPath = FileUtils.getHashedPath(sha256FileName);
+    const sha256FileName = fileUtils.getSha256(`${originalFileName}-${timestamp}`);
+    const hashedPath = fileUtils.getHashedPath(sha256FileName);
     const mergedFilePath = path.join(this.UPLOAD_DIR, hashedPath);
 
-    FileUtils.makeDir(mergedFilePath);
+    fileUtils.makeDir(mergedFilePath);
 
     const mergedFileStream = fs.createWriteStream(
       path.join(mergedFilePath, sha256FileName)
@@ -33,7 +33,7 @@ class FileService {
 
     try {
       await this._processChunks(originalFileName, totalChunks, mergedFileStream);
-      await FileUtils.deleteChunks(this.CHUNK_DIR, originalFileName);
+      await fileUtils.deleteChunks(this.CHUNK_DIR, originalFileName);
 
       // 파일 병합 완료 후 DB에 메타데이터 저장
       const finalFilePath = path.join(mergedFilePath, sha256FileName);
@@ -94,7 +94,7 @@ class FileService {
   }
 
   async getUploadStatus(fileName) {
-    const count = await FileUtils.getChunkCount(fileName);
+    const count = await fileUtils.getChunkCount(fileName);
     return {
       count
     };
